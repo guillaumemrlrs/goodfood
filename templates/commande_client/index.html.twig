@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CommandeClient index{% endblock %}
+
+{% block body %}
+    <h1>CommandeClient index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>IdCommande</th>
+                <th>DateCreation</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for commande_client in commande_clients %}
+            <tr>
+                <td>{{ commande_client.idCommande }}</td>
+                <td>{{ commande_client.dateCreation ? commande_client.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('commande_client_show', {'idCommande': commande_client.idCommande}) }}">show</a>
+                    <a href="{{ path('commande_client_edit', {'idCommande': commande_client.idCommande}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('commande_client_new') }}">Create new</a>
+{% endblock %}

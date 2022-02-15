@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Groupement index{% endblock %}
+
+{% block body %}
+    <h1>Groupement index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>IdGroupement</th>
+                <th>NomGroupement</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for groupement in groupements %}
+            <tr>
+                <td>{{ groupement.idGroupement }}</td>
+                <td>{{ groupement.nomGroupement }}</td>
+                <td>
+                    <a href="{{ path('groupement_show', {'idGroupement': groupement.idGroupement}) }}">show</a>
+                    <a href="{{ path('groupement_edit', {'idGroupement': groupement.idGroupement}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('groupement_new') }}">Create new</a>
+{% endblock %}

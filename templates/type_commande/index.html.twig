@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TypeCommande index{% endblock %}
+
+{% block body %}
+    <h1>TypeCommande index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>IdTypeCommande</th>
+                <th>NomTypeCommande</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for type_commande in type_commandes %}
+            <tr>
+                <td>{{ type_commande.idTypeCommande }}</td>
+                <td>{{ type_commande.nomTypeCommande }}</td>
+                <td>
+                    <a href="{{ path('type_commande_show', {'idTypeCommande': type_commande.idTypeCommande}) }}">show</a>
+                    <a href="{{ path('type_commande_edit', {'idTypeCommande': type_commande.idTypeCommande}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('type_commande_new') }}">Create new</a>
+{% endblock %}

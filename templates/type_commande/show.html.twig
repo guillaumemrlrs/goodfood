@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TypeCommande{% endblock %}
+
+{% block body %}
+    <h1>TypeCommande</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>IdTypeCommande</th>
+                <td>{{ type_commande.idTypeCommande }}</td>
+            </tr>
+            <tr>
+                <th>NomTypeCommande</th>
+                <td>{{ type_commande.nomTypeCommande }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('type_commande_index') }}">back to list</a>
+
+    <a href="{{ path('type_commande_edit', {'idTypeCommande': type_commande.idTypeCommande}) }}">edit</a>
+
+    {{ include('type_commande/_delete_form.html.twig') }}
+{% endblock %}

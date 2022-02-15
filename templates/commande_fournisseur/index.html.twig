@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CommandeFournisseur index{% endblock %}
+
+{% block body %}
+    <h1>CommandeFournisseur index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>IdCommande</th>
+                <th>DateCreation</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for commande_fournisseur in commande_fournisseurs %}
+            <tr>
+                <td>{{ commande_fournisseur.idCommande }}</td>
+                <td>{{ commande_fournisseur.dateCreation ? commande_fournisseur.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('commande_fournisseur_show', {'idCommande': commande_fournisseur.idCommande}) }}">show</a>
+                    <a href="{{ path('commande_fournisseur_edit', {'idCommande': commande_fournisseur.idCommande}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('commande_fournisseur_new') }}">Create new</a>
+{% endblock %}

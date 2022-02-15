@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reduction index{% endblock %}
+
+{% block body %}
+    <h1>Reduction index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>IdReduction</th>
+                <th>CodeReduction</th>
+                <th>PourcentageReduction</th>
+                <th>DateExpirationReduction</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for reduction in reductions %}
+            <tr>
+                <td>{{ reduction.idReduction }}</td>
+                <td>{{ reduction.codeReduction }}</td>
+                <td>{{ reduction.pourcentageReduction }}</td>
+                <td>{{ reduction.dateExpirationReduction ? reduction.dateExpirationReduction|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('reduction_show', {'idReduction': reduction.idReduction}) }}">show</a>
+                    <a href="{{ path('reduction_edit', {'idReduction': reduction.idReduction}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('reduction_new') }}">Create new</a>
+{% endblock %}
