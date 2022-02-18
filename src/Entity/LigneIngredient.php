@@ -19,6 +19,10 @@ class LigneIngredient
     #[ORM\Column(type: 'float')]
     private $prix;
 
+    #[ORM\OneToOne(targetEntity: Ingredient::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private $ingredient;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +48,18 @@ class LigneIngredient
     public function setPrix(float $prix): self
     {
         $this->prix = $prix;
+
+        return $this;
+    }
+
+    public function getIngredient(): ?Ingredient
+    {
+        return $this->ingredient;
+    }
+
+    public function setIngredient(Ingredient $ingredient): self
+    {
+        $this->ingredient = $ingredient;
 
         return $this;
     }
