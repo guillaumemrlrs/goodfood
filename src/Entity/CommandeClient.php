@@ -25,7 +25,6 @@ class CommandeClient
     private $adresse;
 
     #[ORM\ManyToOne(targetEntity: TypePaiement::class, inversedBy: 'commandeClients')]
-    #[ORM\JoinColumn(nullable: false)]
     private $typePaiement;
 
     #[ORM\OneToMany(mappedBy: 'commandeClient', targetEntity: ContenirQuantite::class)]
