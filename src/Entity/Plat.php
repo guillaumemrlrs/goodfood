@@ -28,6 +28,10 @@ class Plat
     #[ORM\Column(type: 'boolean')]
     private $disponible;
 
+    #[ORM\ManyToOne(targetEntity: Categorie::class, inversedBy: 'plats')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $categorie;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -89,6 +93,18 @@ class Plat
     public function setDisponible(bool $disponible): self
     {
         $this->disponible = $disponible;
+
+        return $this;
+    }
+
+    public function getCategorie(): ?Categorie
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?Categorie $categorie): self
+    {
+        $this->categorie = $categorie;
 
         return $this;
     }
