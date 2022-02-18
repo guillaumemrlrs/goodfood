@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CommandeClientRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CommandeClientRepository::class)]
@@ -25,6 +27,14 @@ class CommandeClient
     #[ORM\ManyToOne(targetEntity: TypePaiement::class, inversedBy: 'commandeClients')]
     #[ORM\JoinColumn(nullable: false)]
     private $typePaiement;
+
+    #[ORM\OneToMany(mappedBy: 'commandeClient', targetEntity: ContenirQuantite::class)]
+    private $contenirQuantites;
+
+    public function __construct()
+    {
+        $this->contenirQuantites = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -75,6 +85,36 @@ class CommandeClient
     public function setTypePaiement(?TypePaiement $typePaiement): self
     {
         $this->typePaiement = $typePaiement;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ContenirQuantite[]
+     */
+    public function getContenirQuantites(): Collection
+    {
+        return $this->contenirQuantites;
+    }
+
+    public function addContenirQuantite(ContenirQuantite $contenirQuantite): self
+    {
+        if (!$this->contenirQuantites->contains($contenirQuantite)) {
+            $this->contenirQuantites[] = $contenirQuantite;
+            $contenirQuantite->setCommandeClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContenirQuantite(ContenirQuantite $contenirQuantite): self
+    {
+        if ($this->contenirQuantites->removeElement($contenirQuantite)) {
+            // set the owning side to null (unless already changed)
+            if ($contenirQuantite->getCommandeClient() === $this) {
+                $contenirQuantite->setCommandeClient(null);
+            }
+        }
 
         return $this;
     }
