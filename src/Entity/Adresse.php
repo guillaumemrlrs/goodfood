@@ -33,6 +33,9 @@ class Adresse
     #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: CommandeClient::class)]
     private $commandesClient;
 
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'adresses')]
+    private $utilisateur;
+
     public function __construct()
     {
         $this->commandesClient = new ArrayCollection();
@@ -129,6 +132,18 @@ class Adresse
                 $commandesClient->setAdresse(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): self
+    {
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }
