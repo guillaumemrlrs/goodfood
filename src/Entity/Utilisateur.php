@@ -38,9 +38,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 15)]
     private $civilite;
 
-    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Adresse::class)]
-    private $adresse;
-
     public function __construct()
     {
         $this->adresse = new ArrayCollection();
@@ -160,36 +157,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCivilite(string $civilite): self
     {
         $this->civilite = $civilite;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Adresse[]
-     */
-    public function getAdresse(): Collection
-    {
-        return $this->adresse;
-    }
-
-    public function addAdresse(Adresse $adresse): self
-    {
-        if (!$this->adresse->contains($adresse)) {
-            $this->adresse[] = $adresse;
-            $adresse->setUtilisateur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAdresse(Adresse $adresse): self
-    {
-        if ($this->adresse->removeElement($adresse)) {
-            // set the owning side to null (unless already changed)
-            if ($adresse->getUtilisateur() === $this) {
-                $adresse->setUtilisateur(null);
-            }
-        }
 
         return $this;
     }
