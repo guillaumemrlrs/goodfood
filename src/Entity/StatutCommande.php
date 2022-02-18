@@ -2,48 +2,74 @@
 
 namespace App\Entity;
 
+use App\Repository\StatutCommandeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * StatutCommande
- *
- * @ORM\Table(name="statut_commande")
- * @ORM\Entity
- */
+#[ORM\Entity(repositoryClass: StatutCommandeRepository::class)]
 class StatutCommande
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id_statut_commande", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $idStatutCommande;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="libelle_statut_commande", type="string", length=50, nullable=false)
-     */
-    private $libelleStatutCommande;
+    #[ORM\Column(type: 'string', length: 50)]
+    private $libelle;
 
-    public function getIdStatutCommande(): ?int
+    #[ORM\OneToMany(mappedBy: 'statutCommande', targetEntity: CommandeClient::class)]
+    private $commandes_client;
+
+    public function __construct()
     {
-        return $this->idStatutCommande;
+        $this->commandes_client = new ArrayCollection();
     }
 
-    public function getLibelleStatutCommande(): ?string
+    public function getId(): ?int
     {
-        return $this->libelleStatutCommande;
+        return $this->id;
     }
 
-    public function setLibelleStatutCommande(string $libelleStatutCommande): self
+    public function getLibelle(): ?string
     {
-        $this->libelleStatutCommande = $libelleStatutCommande;
+        return $this->libelle;
+    }
+
+    public function setLibelle(string $libelle): self
+    {
+        $this->libelle = $libelle;
 
         return $this;
     }
 
+    /**
+     * @return Collection|CommandeClient[]
+     */
+    public function getCommandesClient(): Collection
+    {
+        return $this->commandes_client;
+    }
 
+    public function addCommandesClient(CommandeClient $commandesClient): self
+    {
+        if (!$this->commandes_client->contains($commandesClient)) {
+            $this->commandes_client[] = $commandesClient;
+            $commandesClient->setStatutCommande($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommandesClient(CommandeClient $commandesClient): self
+    {
+        if ($this->commandes_client->removeElement($commandesClient)) {
+            // set the owning side to null (unless already changed)
+            if ($commandesClient->getStatutCommande() === $this) {
+                $commandesClient->setStatutCommande(null);
+            }
+        }
+
+        return $this;
+    }
 }

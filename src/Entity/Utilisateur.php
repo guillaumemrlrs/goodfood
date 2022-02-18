@@ -2,73 +2,53 @@
 
 namespace App\Entity;
 
+use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * Utilisateur
- *
- * @ORM\Table(name="utilisateur", uniqueConstraints={@ORM\UniqueConstraint(name="Utilisateur_Panier0_AK", columns={"id_panier"})})
- * @ORM\Entity
- */
-class Utilisateur
+#[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id_utilisateur", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $idUtilisateur;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=50, nullable=false)
-     */
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $email;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nom", type="string", length=50, nullable=false)
-     */
+    #[ORM\Column(type: 'json')]
+    private $roles = [];
+
+    #[ORM\Column(type: 'string')]
+    private $password;
+
+    #[ORM\Column(type: 'string', length: 50)]
     private $nom;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="prenom", type="string", length=50, nullable=false)
-     */
+    #[ORM\Column(type: 'string', length: 50)]
     private $prenom;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="tel", type="string", length=50, nullable=false)
-     */
+    #[ORM\Column(type: 'string', length: 20)]
     private $tel;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="libelle_civilite", type="string", length=50, nullable=false)
-     */
-    private $libelleCivilite;
+    #[ORM\Column(type: 'string', length: 15)]
+    private $civilite;
 
-    /**
-     * @var \Panier
-     *
-     * @ORM\ManyToOne(targetEntity="Panier")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_panier", referencedColumnName="id_panier")
-     * })
-     */
-    private $idPanier;
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Adresse::class)]
+    private $adresse;
 
-    public function getIdUtilisateur(): ?int
+    public function __construct()
     {
-        return $this->idUtilisateur;
+        $this->adresse = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getEmail(): ?string
@@ -81,6 +61,59 @@ class Utilisateur
         $this->email = $email;
 
         return $this;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
     public function getNom(): ?string
@@ -119,29 +152,45 @@ class Utilisateur
         return $this;
     }
 
-    public function getLibelleCivilite(): ?string
+    public function getCivilite(): ?string
     {
-        return $this->libelleCivilite;
+        return $this->civilite;
     }
 
-    public function setLibelleCivilite(string $libelleCivilite): self
+    public function setCivilite(string $civilite): self
     {
-        $this->libelleCivilite = $libelleCivilite;
+        $this->civilite = $civilite;
 
         return $this;
     }
 
-    public function getIdPanier(): ?Panier
+    /**
+     * @return Collection|Adresse[]
+     */
+    public function getAdresse(): Collection
     {
-        return $this->idPanier;
+        return $this->adresse;
     }
 
-    public function setIdPanier(?Panier $idPanier): self
+    public function addAdresse(Adresse $adresse): self
     {
-        $this->idPanier = $idPanier;
+        if (!$this->adresse->contains($adresse)) {
+            $this->adresse[] = $adresse;
+            $adresse->setUtilisateur($this);
+        }
 
         return $this;
     }
 
+    public function removeAdresse(Adresse $adresse): self
+    {
+        if ($this->adresse->removeElement($adresse)) {
+            // set the owning side to null (unless already changed)
+            if ($adresse->getUtilisateur() === $this) {
+                $adresse->setUtilisateur(null);
+            }
+        }
 
+        return $this;
+    }
 }

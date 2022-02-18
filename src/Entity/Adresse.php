@@ -2,73 +2,55 @@
 
 namespace App\Entity;
 
+use App\Repository\AdresseRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Adresse
- *
- * @ORM\Table(name="adresse")
- * @ORM\Entity
- */
+#[ORM\Entity(repositoryClass: AdresseRepository::class)]
 class Adresse
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id_adresse", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $idAdresse;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nom_adresse", type="string", length=70, nullable=false)
-     */
-    private $nomAdresse;
+    #[ORM\Column(type: 'string', length: 50)]
+    private $nom;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="ligne1", type="string", length=70, nullable=false)
-     */
+    #[ORM\Column(type: 'string', length: 100)]
     private $ligne1;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="ligne2", type="string", length=70, nullable=false)
-     */
+    #[ORM\Column(type: 'string', length: 100)]
     private $ligne2;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="ville", type="string", length=70, nullable=false)
-     */
+    #[ORM\Column(type: 'string', length: 50)]
     private $ville;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="code_postal", type="string", length=70, nullable=false)
-     */
-    private $codePostal;
+    #[ORM\Column(type: 'string', length: 50)]
+    private $codepostal;
 
-    public function getIdAdresse(): ?int
+    #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: CommandeClient::class)]
+    private $commandesClient;
+
+    public function __construct()
     {
-        return $this->idAdresse;
+        $this->commandesClient = new ArrayCollection();
     }
 
-    public function getNomAdresse(): ?string
+    public function getId(): ?int
     {
-        return $this->nomAdresse;
+        return $this->id;
     }
 
-    public function setNomAdresse(string $nomAdresse): self
+    public function getNom(): ?string
     {
-        $this->nomAdresse = $nomAdresse;
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
 
         return $this;
     }
@@ -109,17 +91,45 @@ class Adresse
         return $this;
     }
 
-    public function getCodePostal(): ?string
+    public function getCodepostal(): ?string
     {
-        return $this->codePostal;
+        return $this->codepostal;
     }
 
-    public function setCodePostal(string $codePostal): self
+    public function setCodepostal(string $codepostal): self
     {
-        $this->codePostal = $codePostal;
+        $this->codepostal = $codepostal;
 
         return $this;
     }
 
+    /**
+     * @return Collection|CommandeClient[]
+     */
+    public function getCommandesClient(): Collection
+    {
+        return $this->commandesClient;
+    }
 
+    public function addCommandesClient(CommandeClient $commandesClient): self
+    {
+        if (!$this->commandesClient->contains($commandesClient)) {
+            $this->commandesClient[] = $commandesClient;
+            $commandesClient->setAdresse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommandesClient(CommandeClient $commandesClient): self
+    {
+        if ($this->commandesClient->removeElement($commandesClient)) {
+            // set the owning side to null (unless already changed)
+            if ($commandesClient->getAdresse() === $this) {
+                $commandesClient->setAdresse(null);
+            }
+        }
+
+        return $this;
+    }
 }
