@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RestaurantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RestaurantRepository::class)]
@@ -36,6 +38,14 @@ class Restaurant
 
     #[ORM\ManyToOne(targetEntity: Groupement::class, inversedBy: 'restaurants')]
     private $groupement;
+
+    #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: CommandeFournisseur::class)]
+    private $commandeFournisseurs;
+
+    public function __construct()
+    {
+        $this->commandeFournisseurs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -134,6 +144,36 @@ class Restaurant
     public function setGroupement(?Groupement $groupement): self
     {
         $this->groupement = $groupement;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CommandeFournisseur[]
+     */
+    public function getCommandeFournisseurs(): Collection
+    {
+        return $this->commandeFournisseurs;
+    }
+
+    public function addCommandeFournisseur(CommandeFournisseur $commandeFournisseur): self
+    {
+        if (!$this->commandeFournisseurs->contains($commandeFournisseur)) {
+            $this->commandeFournisseurs[] = $commandeFournisseur;
+            $commandeFournisseur->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommandeFournisseur(CommandeFournisseur $commandeFournisseur): self
+    {
+        if ($this->commandeFournisseurs->removeElement($commandeFournisseur)) {
+            // set the owning side to null (unless already changed)
+            if ($commandeFournisseur->getRestaurant() === $this) {
+                $commandeFournisseur->setRestaurant(null);
+            }
+        }
 
         return $this;
     }
