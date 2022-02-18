@@ -44,6 +44,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: CB::class)]
     private $cartesBancaires;
 
+    #[ORM\OneToOne(mappedBy: 'utilisateur', targetEntity: Panier::class, cascade: ['persist', 'remove'])]
+    private $panier;
+
     public function __construct()
     {
         $this->adresse = new ArrayCollection();
@@ -230,6 +233,28 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
                 $cartesBancaire->setUtilisateur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPanier(): ?Panier
+    {
+        return $this->panier;
+    }
+
+    public function setPanier(?Panier $panier): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($panier === null && $this->panier !== null) {
+            $this->panier->setUtilisateur(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($panier !== null && $panier->getUtilisateur() !== $this) {
+            $panier->setUtilisateur($this);
+        }
+
+        $this->panier = $panier;
 
         return $this;
     }
