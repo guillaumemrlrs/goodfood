@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}StatutCommande index{% endblock %}
+
+{% block body %}
+    <h1>StatutCommande index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Libelle</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for statut_commande in statut_commandes %}
+            <tr>
+                <td>{{ statut_commande.id }}</td>
+                <td>{{ statut_commande.libelle }}</td>
+                <td>
+                    <a href="{{ path('statut_commande_show', {'id': statut_commande.id}) }}">show</a>
+                    <a href="{{ path('statut_commande_edit', {'id': statut_commande.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('statut_commande_new') }}">Create new</a>
+{% endblock %}
