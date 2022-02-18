@@ -42,9 +42,17 @@ class Restaurant
     #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: CommandeFournisseur::class)]
     private $commandeFournisseurs;
 
+    #[ORM\ManyToMany(targetEntity: Plat::class)]
+    private $plats;
+
+    #[ORM\ManyToMany(targetEntity: Menu::class)]
+    private $menus;
+
     public function __construct()
     {
         $this->commandeFournisseurs = new ArrayCollection();
+        $this->plats = new ArrayCollection();
+        $this->menus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -174,6 +182,54 @@ class Restaurant
                 $commandeFournisseur->setRestaurant(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Plat[]
+     */
+    public function getPlats(): Collection
+    {
+        return $this->plats;
+    }
+
+    public function addPlat(Plat $plat): self
+    {
+        if (!$this->plats->contains($plat)) {
+            $this->plats[] = $plat;
+        }
+
+        return $this;
+    }
+
+    public function removePlat(Plat $plat): self
+    {
+        $this->plats->removeElement($plat);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Menu[]
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): self
+    {
+        if (!$this->menus->contains($menu)) {
+            $this->menus[] = $menu;
+        }
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): self
+    {
+        $this->menus->removeElement($menu);
 
         return $this;
     }
