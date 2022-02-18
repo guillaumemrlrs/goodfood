@@ -42,6 +42,9 @@ class Restaurant
     #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: CommandeFournisseur::class)]
     private $commandeFournisseurs;
 
+    #[ORM\OneToOne(mappedBy: 'restaurant', targetEntity: CataloguePlat::class, cascade: ['persist', 'remove'])]
+    private $cataloguePlat;
+
     public function __construct()
     {
         $this->commandeFournisseurs = new ArrayCollection();
@@ -174,6 +177,23 @@ class Restaurant
                 $commandeFournisseur->setRestaurant(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCataloguePlat(): ?CataloguePlat
+    {
+        return $this->cataloguePlat;
+    }
+
+    public function setCataloguePlat(CataloguePlat $cataloguePlat): self
+    {
+        // set the owning side of the relation if necessary
+        if ($cataloguePlat->getRestaurant() !== $this) {
+            $cataloguePlat->setRestaurant($this);
+        }
+
+        $this->cataloguePlat = $cataloguePlat;
 
         return $this;
     }
