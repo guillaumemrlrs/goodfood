@@ -21,6 +21,9 @@ class Panier
     #[ORM\OneToOne(inversedBy: 'panier', targetEntity: Utilisateur::class, cascade: ['persist', 'remove'])]
     private $utilisateur;
 
+    #[ORM\OneToOne(targetEntity: Reduction::class, cascade: ['persist', 'remove'])]
+    private $reduction;
+
     public function __construct()
     {
         $this->contenirQuantites = new ArrayCollection();
@@ -69,6 +72,18 @@ class Panier
     public function setUtilisateur(?Utilisateur $utilisateur): self
     {
         $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+
+    public function getReduction(): ?Reduction
+    {
+        return $this->reduction;
+    }
+
+    public function setReduction(?Reduction $reduction): self
+    {
+        $this->reduction = $reduction;
 
         return $this;
     }
