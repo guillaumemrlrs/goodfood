@@ -41,10 +41,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Adresse::class)]
     private $adresses;
 
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: CB::class)]
+    private $cartesBancaires;
+
     public function __construct()
     {
         $this->adresse = new ArrayCollection();
         $this->adresses = new ArrayCollection();
+        $this->cartesBancaires = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -198,6 +202,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString(): string
     {
         return $this->getNom();
+    }
+
+    /**
+     * @return Collection|CB[]
+     */
+    public function getCartesBancaires(): Collection
+    {
+        return $this->cartesBancaires;
+    }
+
+    public function addCartesBancaire(CB $cartesBancaire): self
+    {
+        if (!$this->cartesBancaires->contains($cartesBancaire)) {
+            $this->cartesBancaires[] = $cartesBancaire;
+            $cartesBancaire->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCartesBancaire(CB $cartesBancaire): self
+    {
+        if ($this->cartesBancaires->removeElement($cartesBancaire)) {
+            // set the owning side to null (unless already changed)
+            if ($cartesBancaire->getUtilisateur() === $this) {
+                $cartesBancaire->setUtilisateur(null);
+            }
+        }
+
+        return $this;
     }
 
 }
