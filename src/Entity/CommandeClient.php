@@ -22,6 +22,10 @@ class CommandeClient
     #[ORM\ManyToOne(targetEntity: Adresse::class, inversedBy: 'commandesClient')]
     private $adresse;
 
+    #[ORM\ManyToOne(targetEntity: TypePaiement::class, inversedBy: 'commandeClients')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $typePaiement;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +63,18 @@ class CommandeClient
     public function setAdresse(?Adresse $adresse): self
     {
         $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function getTypePaiement(): ?TypePaiement
+    {
+        return $this->typePaiement;
+    }
+
+    public function setTypePaiement(?TypePaiement $typePaiement): self
+    {
+        $this->typePaiement = $typePaiement;
 
         return $this;
     }
