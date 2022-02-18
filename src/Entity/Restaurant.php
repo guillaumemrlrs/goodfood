@@ -34,6 +34,9 @@ class Restaurant
     #[ORM\Column(type: 'string', length: 20)]
     private $codePostal;
 
+    #[ORM\ManyToOne(targetEntity: Groupement::class, inversedBy: 'restaurants')]
+    private $groupement;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -119,6 +122,18 @@ class Restaurant
     public function setCodePostal(string $codePostal): self
     {
         $this->codePostal = $codePostal;
+
+        return $this;
+    }
+
+    public function getGroupement(): ?Groupement
+    {
+        return $this->groupement;
+    }
+
+    public function setGroupement(?Groupement $groupement): self
+    {
+        $this->groupement = $groupement;
 
         return $this;
     }
