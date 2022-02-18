@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PlatRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PlatRepository::class)]
@@ -31,6 +33,14 @@ class Plat
     #[ORM\ManyToOne(targetEntity: Categorie::class, inversedBy: 'plats')]
     #[ORM\JoinColumn(nullable: false)]
     private $categorie;
+
+    #[ORM\OneToMany(mappedBy: 'plat', targetEntity: PlatComposeIngredient::class, orphanRemoval: true)]
+    private $platComposeIngredients;
+
+    public function __construct()
+    {
+        $this->platComposeIngredients = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,6 +115,36 @@ class Plat
     public function setCategorie(?Categorie $categorie): self
     {
         $this->categorie = $categorie;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PlatComposeIngredient[]
+     */
+    public function getPlatComposeIngredients(): Collection
+    {
+        return $this->platComposeIngredients;
+    }
+
+    public function addPlatComposeIngredient(PlatComposeIngredient $platComposeIngredient): self
+    {
+        if (!$this->platComposeIngredients->contains($platComposeIngredient)) {
+            $this->platComposeIngredients[] = $platComposeIngredient;
+            $platComposeIngredient->setPlat($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlatComposeIngredient(PlatComposeIngredient $platComposeIngredient): self
+    {
+        if ($this->platComposeIngredients->removeElement($platComposeIngredient)) {
+            // set the owning side to null (unless already changed)
+            if ($platComposeIngredient->getPlat() === $this) {
+                $platComposeIngredient->setPlat(null);
+            }
+        }
 
         return $this;
     }
