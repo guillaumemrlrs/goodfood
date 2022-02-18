@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MenuRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
@@ -27,6 +29,14 @@ class Menu
 
     #[ORM\Column(type: 'boolean')]
     private $disponible;
+
+    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: PlatDansMenu::class, orphanRemoval: true)]
+    private $platDansMenus;
+
+    public function __construct()
+    {
+        $this->platDansMenus = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -89,6 +99,36 @@ class Menu
     public function setDisponible(bool $disponible): self
     {
         $this->disponible = $disponible;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PlatDansMenu[]
+     */
+    public function getPlatDansMenus(): Collection
+    {
+        return $this->platDansMenus;
+    }
+
+    public function addPlatDansMenu(PlatDansMenu $platDansMenu): self
+    {
+        if (!$this->platDansMenus->contains($platDansMenu)) {
+            $this->platDansMenus[] = $platDansMenu;
+            $platDansMenu->setMenu($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlatDansMenu(PlatDansMenu $platDansMenu): self
+    {
+        if ($this->platDansMenus->removeElement($platDansMenu)) {
+            // set the owning side to null (unless already changed)
+            if ($platDansMenu->getMenu() === $this) {
+                $platDansMenu->setMenu(null);
+            }
+        }
 
         return $this;
     }
