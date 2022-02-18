@@ -19,6 +19,10 @@ class CommandeFournisseur
     #[ORM\ManyToOne(targetEntity: Restaurant::class, inversedBy: 'commandeFournisseurs')]
     private $restaurant;
 
+    #[ORM\ManyToOne(targetEntity: Fournisseur::class, inversedBy: 'commandeFournisseurs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $fournisseur;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +48,18 @@ class CommandeFournisseur
     public function setRestaurant(?Restaurant $restaurant): self
     {
         $this->restaurant = $restaurant;
+
+        return $this;
+    }
+
+    public function getFournisseur(): ?Fournisseur
+    {
+        return $this->fournisseur;
+    }
+
+    public function setFournisseur(?Fournisseur $fournisseur): self
+    {
+        $this->fournisseur = $fournisseur;
 
         return $this;
     }
