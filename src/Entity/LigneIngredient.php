@@ -23,6 +23,10 @@ class LigneIngredient
     #[ORM\JoinColumn(nullable: false)]
     private $ingredient;
 
+    #[ORM\ManyToOne(targetEntity: CommandeFournisseur::class, inversedBy: 'ligneIngredients')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $commandeFournisseur;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +64,18 @@ class LigneIngredient
     public function setIngredient(Ingredient $ingredient): self
     {
         $this->ingredient = $ingredient;
+
+        return $this;
+    }
+
+    public function getCommandeFournisseur(): ?CommandeFournisseur
+    {
+        return $this->commandeFournisseur;
+    }
+
+    public function setCommandeFournisseur(?CommandeFournisseur $commandeFournisseur): self
+    {
+        $this->commandeFournisseur = $commandeFournisseur;
 
         return $this;
     }
